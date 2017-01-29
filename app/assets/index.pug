@@ -1,7 +1,7 @@
 doctype html
 html(lang='en')
   head
-    title TransforMap Editor
+    title SUSY-Editor
     meta(charset="utf-8")
     meta(name="viewport" content="initial-scale=1.0, user-scalable=no")
     meta(name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi")
@@ -15,6 +15,10 @@ html(lang='en')
       h1 SUSY-Editor
       form
         fieldset
+          .row#menu
+            button(type=button onClick='history.go()') Reset
+            a(href='.' id='newbutton' title='Create a new POI') New
+            a(href='https://github.com/TransforMap/transformap-editor/blob/master/HELP.md' id='help' target='_blank') Help
           .row#id
             label(for='_id') Object ID
             input(type='text' id='_id' disabled='true')
@@ -75,6 +79,10 @@ html(lang='en')
             input(type='text' id='_key_addr:housenumber')
           //fixme add support for addr:housename and addr:place
           .row(style='margin-top:1em')
+            label Search for Coordinates from Address
+            button(type='button' id='coordsearch') Go!
+            Search using OpenStreetMap
+          .row(style='margin-top:1em')
             label(for='_geometry_lon' title='X, WGS84, decimal degree') Longitude
             input(type='text' id='_geometry_lon')
           .row
@@ -120,6 +128,7 @@ html(lang='en')
             input(type='text' id='key1' name='freetags')
             input(type='text' id='value1' name='freetags')
       button(type='button' id='delete') Delete POI
+      button(type='button' id='save') Save
 
             
     #map
