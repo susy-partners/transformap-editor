@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>TransforMap Editor</title>
+    <title>SUSY-Editor</title>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi">
@@ -16,6 +16,9 @@
       <h1>SUSY-Editor</h1>
       <form>
         <fieldset>
+          <div class="row" id="menu">
+            <button onClick="history.go()">Reset</button><a href="." id="newbutton" title="Create a new POI">New</a><a href="https://github.com/TransforMap/transformap-editor/blob/master/HELP.md" id="help" target="_blank">Help</a>
+          </div>
           <div class="row" id="id">
             <label for="_id">Object ID</label>
             <input type="text" id="_id" disabled="true">
@@ -88,7 +91,12 @@
             <input type="text" id="_key_addr:housenumber">
           </div>
           <!--fixme add support for addr:housename and addr:place-->
-          <div class="row" style="margin-top:1em">
+          <div class="row" style="margin-top:1em;">
+            <label>Search for Coordinates from Address</label>
+            <button type="button" id="coordsearch">Go!</button>
+            <Search>using OpenStreetMap</Search>
+          </div>
+          <div class="row" style="margin-top:1em;">
             <label for="_geometry_lon" title="X, WGS84, decimal degree">Longitude</label>
             <input type="text" id="_geometry_lon">
           </div>
@@ -149,6 +157,7 @@
         </fieldset>
       </form>
       <button type="button" id="delete">Delete POI</button>
+      <button type="button" id="save">Save</button>
     </div>
     <div id="map"></div>
   </body>
