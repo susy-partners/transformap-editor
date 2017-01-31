@@ -515,7 +515,12 @@ module.exports = function () {
         if (xhr.status === 200) {
           var retJson = JSON.parse(xhr.responseText);
           console.log(retJson);
-          document.getElementById('_id').value = retJson.id;
+          if (retJson.id) {
+            document.getElementById('_id').value = retJson.id;
+            alert('Save successful');
+          } else {
+            alert('Error: something wrent wrong on saving: ' + JSON.stringify(retJson));
+          }
         } else {
           console.error(xhr);
         }
@@ -529,6 +534,10 @@ module.exports = function () {
     var uuid = document.getElementById('_id').value;
     if (!uuid) {
       alert('nothing to delete');
+      return;
+    }
+    if (!confirm('Do you really want to delete this POI? It will be only marked as deleted and can restored later if you save the current Browser URL.')) {
+      console.log('user aborted delete');
       return;
     }
     var xhr = createCORSRequest('DELETE', endpoint + uuid);
@@ -616,6 +625,21 @@ module.exports = function () {
     }
   }
   document.onkeypress = stopRKey;
+
+  function updateLinkPosition() {
+    var centre = map.getCenter();
+    var targetlocation = '#' + map.getZoom() + '/' + centre.lat + '/' + centre.lng;
+
+    var maplink = document.getElementById('gotomap');
+    var href = maplink.getAttribute('href');
+    var splitstr = href.split('#');
+    href = maplink.getAttribute('href').split('#')[0] + targetlocation;
+    maplink.setAttribute('href', href);
+
+    var newlink = document.getElementById('newbutton');
+    newlink.setAttribute('href', './' + targetlocation);
+  }
+  map.on('moveend', updateLinkPosition);
 
   console.log('editor initialize end');
 };
