@@ -5,38 +5,75 @@ html(lang='en')
     meta(charset="utf-8")
     meta(name="viewport" content="initial-scale=1.0, user-scalable=no")
     meta(name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi")
-    script(src='/vendor.js')
-    script(src='/app.js')
+    script(src='vendor.js')
+    script(src='app.js')
     script require('initialize')
-    link(rel='stylesheet', href="/app.css")
-    link(rel='stylesheet', href="/vendor.css")
+    script(defer='defer' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js')
+    script.
+      if(! Modernizr.promises) {
+        document.write('<script src="https://www.promisejs.org/polyfills/promise-7.0.4.min.js"></sc' + 'ript>')
+        document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.2/fetch.min.js"></sc' + 'ript>')
+      }
+    link(href='//fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css')
+    link(rel='stylesheet', href="app.css")
+    link(rel='stylesheet', href="vendor.css")
   body
     #forms
       h1 SUSY-Editor
       form
-        fieldset
+        fieldset.no-padding
           .row#menu
-            a(href='' id='resetbutton') Reset
-            a(href='.' id='newbutton' title='Create a new POI') New
-            a(href='https://github.com/TransforMap/transformap-editor/blob/master/HELP.md' id='help' target='_blank') Help
-            span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            a(href='https://susy-partners.github.io/transformap-viewer/editable.html?background=mapnik#5/50.458/10.261' id='gotomap' target='_blank') → Go to Map
-          .row#id
-            label(for='_id') Object ID
-            input(type='text' id='_id' disabled='true')
-            .row#deleted {{{ This object is in 'deleted' state. To undelete, click 'Save' }}}
-        fieldset
+            a(href='https://susy-partners.github.io/transformap-viewer/editable.html?background=mapnik#5/50.458/10.261' class='btn btn-default' id='gotomap' target='_blank') → Go to Map
+            a(href='https://github.com/TransforMap/transformap-editor/blob/master/HELP.md' class='btn btn-default' id='help' target='_blank') Help
+            a(href='.' id='newbutton' title='Create a new POI' class='btn btn-success') New
+            a(href='' id='resetbutton' class='btn btn-danger') Reset
+        fieldset#address
+          legend Name and address
           .row#name
             label(for='_key_name') Name
-            input(type='text' id='_key_name')
+            input(type='text' id='_key_name' class='form-control')
+          .row
+            label(for='_key_addr:country') Country
+            input(type='text' id='_key_addr:country' class='form-control')
+          .row
+            label(for='_key_addr:city') City
+            input(type='text' id='_key_addr:city' class='form-control')
+          .row
+            label(for='_key_addr:postcode') Postcode
+            input(type='text' id='_key_addr:postcode' class='form-control')
+          .row
+            label(for='_key_addr:street') Street Name
+            input(type='text' id='_key_addr:street' class='form-control')
+          .row
+            label(for='_key_addr:housenumber') House Number
+            input(type='text' id='_key_addr:housenumber' class='form-control')
+          //fixme add support for addr:housename and addr:place
+          .row(style='margin-top:1em')
+            label Search for Coordinates from Address
+            button(type='button' id='coordsearch' class='btn btn-success') Go!
+            Search using OpenStreetMap
+          .row(style='margin-top:1em')
+            label(for='_geometry_lon' title='X, WGS84, decimal degree') Longitude
+            input(type='text' id='_geometry_lon' class='form-control')
+          .row
+            label(for='_geometry_lat' title='Y, WGS84, decimal degree') Latitude
+            input(type='text' id='_geometry_lat' class='form-control')
+            //TODO add reset coords button
+        fieldset
+          legend Description
+          .row
+            label(for='_key_description') Description text
+            textarea(id='_key_description' rows='6' class='form-control')
+            //fixme different langs for description
           .row#toi
             label(for='_key_type_of_initiative') Type of Initiative
-            select(id='_key_type_of_initiative' multiple size='5')
+            select(id='_key_type_of_initiative' multiple size='5' class='form-control')
               option(value='') == Choose at least one type of initiative ==
           .row
             label(for='_key_SSEDAS_PARTNER') SUSY Partner
-            select(id='_key_SSEDAS_PARTNER' name='SSEDAS_PARTNER')
-              option(value='') == Choose Partner ==
+            select(id='_key_SSEDAS_PARTNER' name='SSEDAS_PARTNER' class='form-control')
+              option(value='yes' selected='selected') Default
               option(value='BILS') BILSP
               option(value='CARDET') CARDET
               option(value='CERAI') CERAI
@@ -61,78 +98,52 @@ html(lang='en')
               option(value='CCUK') The Cooperative College
               option(value='ThinkGlobal') Think Global
               option(value='Waterford') Waterford One World Centre
-        fieldset#address
-          legend Address
-          .row
-            label(for='_key_addr:country') Country
-            input(type='text' id='_key_addr:country')
-          .row
-            label(for='_key_addr:city') City
-            input(type='text' id='_key_addr:city')
-          .row
-            label(for='_key_addr:postcode') Postcode
-            input(type='text' id='_key_addr:postcode')
-          .row
-            label(for='_key_addr:street') Street Name
-            input(type='text' id='_key_addr:street')
-          .row
-            label(for='_key_addr:housenumber') House Number
-            input(type='text' id='_key_addr:housenumber')
-          //fixme add support for addr:housename and addr:place
-          .row(style='margin-top:1em')
-            label Search for Coordinates from Address
-            button(type='button' id='coordsearch') Go!
-            Search using OpenStreetMap
-          .row(style='margin-top:1em')
-            label(for='_geometry_lon' title='X, WGS84, decimal degree') Longitude
-            input(type='text' id='_geometry_lon')
-          .row
-            label(for='_geometry_lat' title='Y, WGS84, decimal degree') Latitude
-            input(type='text' id='_geometry_lat')
-            //TODO add reset coords button
         fieldset
           legend Contact Data
           .row
             label(for='_key_contact:website') Website
-            input(type='text' id='_key_contact:website')
+            input(type='text' id='_key_contact:website' class='form-control')
           .row
             label(for='_key_contact:email') Email Address
-            input(type='text' id='_key_contact:email')
+            input(type='text' id='_key_contact:email' class='form-control')
           .row
             label(for='_key_contact:phone') Phone Number
-            input(type='text' id='_key_contact:phone')
+            input(type='text' id='_key_contact:phone' class='form-control')
           .row
             label(for='_key_opening_hours') Opening Hours
-            input(type='text' id='_key_opening_hours')
+            input(type='text' id='_key_opening_hours' class='form-control')
           
           //fixme allow more than one field for each type
         fieldset
           legend Additional Information
           .row
             label(for='_key_image') Link to image
-            input(type='text' id='_key_image')
+            input(type='text' id='_key_image' class='form-control')
             span &nbsp;Upload&nbsp;
             a(href='https://base.transformap.co/wiki/Special:Upload' target='_blank') here
             span .
           .row
             label(for='_key_video') Link to video
-            input(type='text' id='_key_video')
-          .row
-            label(for='_key_description') Description text
-            textarea(id='_key_description' rows='4')
-          //fixme different langs for description
+            input(type='text' id='_key_video' class='form-control')
         fieldset#freetags
           legend Free Tags
           //fixme must add additional fields when user fills one
           .row.header
             p Key
             p Value
-            button(type='button' id='plus') Add
+            button(type='button' id='plus' class='btn btn-success') Add
           .row
-            input(type='text' id='key1' name='freetags')
-            input(type='text' id='value1' name='freetags')
-      button(type='button' id='delete') Delete POI
-      button(type='button' id='save') Save
+            input(type='text' id='key1' name='freetags' class='form-control')
+            input(type='text' id='value1' name='freetags' class='form-control')
+        fieldset
+          legend Object information
+          .row#id
+            label(for='_id') Object ID
+            input(type='text' id='_id' disabled='true' class='form-control')
+            .row#deleted {{{ This object is in 'deleted' state. To undelete, click 'Save' }}}
+          
+      button(type='button' id='delete' class='btn btn-danger btn-sm') Delete POI
+      button(type='button' id='save' class='btn btn-success btn-lg') Save
 
             
     #map
