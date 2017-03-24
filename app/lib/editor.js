@@ -110,6 +110,7 @@ module.exports = function () {
       newOption.appendChild(label)
 
       toiSelect.appendChild(newOption)
+      $('#_key_type_of_initiative').selectpicker('refresh')
     })
   }
 
