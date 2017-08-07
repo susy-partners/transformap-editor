@@ -25,6 +25,7 @@ To initially set coordinates, click “Draw a marker” in the bottom left corne
 
 ## Development
 
+git checkout master
 start the watching daemon: ```brunch watch --server -n```
 
 # deployment to gh-pages
@@ -32,6 +33,5 @@ start the watching daemon: ```brunch watch --server -n```
 * save the contents of the 'public' - folder
 * git checkout gh-pages
 * cp -ra public/\* .
-* in the index.html, change the absolute links ("/app.css", …) to relative ones, remove the slash.
 * git add
 * git push
