@@ -1,13 +1,13 @@
 (function() {
   'use strict';
 
-  var globals = typeof global === 'undefined' ? self : global;
+  var globals = typeof window === 'undefined' ? global : window;
   if (typeof globals.require === 'function') return;
 
   var modules = {};
   var cache = {};
   var aliases = {};
-  var has = {}.hasOwnProperty;
+  var has = ({}).hasOwnProperty;
 
   var expRe = /^\.\.?(\/|$)/;
   var expand = function(root, name) {
@@ -36,7 +36,8 @@
   };
 
   var initModule = function(name, definition) {
-    var hot = hmr && hmr.createHot(name);
+    var hot = null;
+    hot = hmr && hmr.createHot(name);
     var module = {id: name, exports: {}, hot: hot};
     cache[name] = module;
     definition(module.exports, localRequire(name), module);
@@ -84,7 +85,7 @@
   };
 
   require.register = require.define = function(bundle, fn) {
-    if (bundle && typeof bundle === 'object') {
+    if (typeof bundle === 'object') {
       for (var key in bundle) {
         if (has.call(bundle, key)) {
           require.register(key, bundle[key]);
@@ -115,7 +116,7 @@
 })();
 
 (function() {
-var global = typeof window === 'undefined' ? this : window;
+var global = window;
 var __makeRelativeRequire = function(require, mappings, pref) {
   var none = {};
   var tryReq = function(name, pref) {
@@ -157,10 +158,9 @@ document.addEventListener('DOMContentLoaded', function () {
   editor();
   console.log('Initialized app');
 });
-
 });
 
-require.register("lib/editor.js", function(exports, require, module) {
+;require.register("lib/editor.js", function(exports, require, module) {
 'use strict';
 
 /* global alert, L, XMLHttpRequest, XDomainRequest */ // used by standardjs (linter)
@@ -678,10 +678,9 @@ module.exports = function () {
 
   console.log('editor initialize end');
 };
-
 });
 
-require.register("lib/getUrlVars.js", function(exports, require, module) {
+;require.register("lib/getUrlVars.js", function(exports, require, module) {
 'use strict';
 
 /*
@@ -707,10 +706,9 @@ function getUrlVars() {
 }
 
 module.exports = getUrlVars;
-
 });
 
-require.register("lib/map.js", function(exports, require, module) {
+;require.register("lib/map.js", function(exports, require, module) {
 'use strict';
 
 var L = require('leaflet');
@@ -879,10 +877,9 @@ function initMap() {
 }
 
 module.exports = initMap;
-
 });
 
-require.register("lib/red_fetch.js", function(exports, require, module) {
+;require.register("lib/red_fetch.js", function(exports, require, module) {
 'use strict';
 
 /*
@@ -1027,10 +1024,9 @@ function redundantFetch(dataUrlArray, successFunction, errorFunction) {
 }
 
 module.exports = redundantFetch;
-
 });
 
-require.register("lib/taxonomy.js", function(exports, require, module) {
+;require.register("lib/taxonomy.js", function(exports, require, module) {
 'use strict';
 
 /*
@@ -1059,10 +1055,9 @@ function getLangTaxURL(lang) {
 module.exports = {
   getLangTaxURL: getLangTaxURL
 };
-
 });
 
-require.register("lib/translations.js", function(exports, require, module) {
+;require.register("lib/translations.js", function(exports, require, module) {
 "use strict";
 
 // mostly taken from https://github.com/TransforMap/transformap-viewer/blob/gh-pages/scripts/map.js
@@ -1247,10 +1242,9 @@ module.exports = {
   switchToLang: switchToLang,
   selectAllowedLang: selectAllowedLang
 };
-
 });
 
-require.register("___globals___", function(exports, require, module) {
+;require.register("___globals___", function(exports, require, module) {
   
 });})();require('___globals___');
 
