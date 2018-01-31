@@ -6,7 +6,7 @@
  *
  * Give it an array of resources, that can be fetched from different urls.
  * Will try to fetch them in the provided order.
- * Execute success_function on the first successful fetch, and error_function only if all resources fail to fetch.
+ * Execute successFunction on the first successful fetch, and errorFunction only if all resources fail to fetch.
  */
 
 /* This program is free software. It comes without any warranty, to
@@ -21,48 +21,48 @@
 */
 
 var processStatus = function (response) {
-    // status "0" to handle local files fetching (e.g. Cordova/Phonegap etc.)
+  // status '0' to handle local files fetching (e.g. Cordova/Phonegap etc.)
   if (response.status === 200 || response.status === 0) {
-    return Promise.resolve(response)
+    return Promise.resolve(response);
   } else {
-    return Promise.reject(new Error(response.statusText))
+    return Promise.reject(new Error(response.statusText));
   }
-}
+};
 
 var parseJson = function (response) {
-  return response.json()
-}
+  return response.json();
+};
 
 /* @returns {wrapped Promise} with .resolve/.reject/.catch methods */
 // It goes against Promise concept to not have external access to .resolve/.reject methods, but provides more flexibility
 var getWrappedPromise = function () {
-  var wrappedPromise = {}
+  var wrappedPromise = {};
   var promise = new Promise(function (resolve, reject) {
-    wrappedPromise.resolve = resolve
-    wrappedPromise.reject = reject
-  })
-  wrappedPromise.then = promise.then.bind(promise)
-  wrappedPromise.catch = promise.catch.bind(promise)
-  wrappedPromise.promise = promise// e.g. if you want to provide somewhere only promise, without .resolve/.reject/.catch methods
-  return wrappedPromise
-}
+    wrappedPromise.resolve = resolve;
+    wrappedPromise.reject = reject;
+  });
+  wrappedPromise.then = promise.then.bind(promise);
+  wrappedPromise.catch = promise.catch.bind(promise);
+  wrappedPromise.promise = promise; // e.g. if you want to provide somewhere only promise, without .resolve/.reject/.catch methods
+  return wrappedPromise;
+};
 
 /* @returns {wrapped Promise} with .resolve/.reject/.catch methods */
 var getWrappedFetch = function () {
-  var wrappedPromise = getWrappedPromise()
-  var args = Array.prototype.slice.call(arguments)// arguments to Array
+  var wrappedPromise = getWrappedPromise();
+  var args = Array.prototype.slice.call(arguments); // arguments to Array
 
   window.fetch.apply(null, args)// calling original fetch() method
         .then(function (response) {
-          wrappedPromise.resolve(response)
+          wrappedPromise.resolve(response);
         }, function (error) {
-          wrappedPromise.reject(error)
+          wrappedPromise.reject(error);
         })
         .catch(function (error) {
-          wrappedPromise.catch(error)
-        })
-  return wrappedPromise
-}
+          wrappedPromise.catch(error);
+        });
+  return wrappedPromise;
+};
 
 /**
  * Fetch JSON by url
@@ -71,74 +71,87 @@ var getWrappedFetch = function () {
  *  [cacheBusting]: {Boolean}
  * } } params
  * @returns {Promise}
-*/var MAX_WAITING_TIME = 5000// in ms
+*/var MAX_WAITING_TIME = 5000; // in ms
 
 var getJSON = function (params) {
   var wrappedFetch = getWrappedFetch(
         params.cacheBusting ? params.url + '?' + new Date().getTime() : params.url,
     {
-      method: 'get', // optional, "GET" is default value
+      method: 'get', // optional, 'GET' is default value
       headers: {
         'Accept': 'application/json'
       }
-    })
+    });
 
   var timeoutId = setTimeout(function () {
-    wrappedFetch.reject(new Error('Load timeout for resource: ' + params.url))// reject on timeout
-  }, MAX_WAITING_TIME)
+    wrappedFetch.reject(new Error('Load timeout for resource: ' + params.url)); // reject on timeout
+  }, MAX_WAITING_TIME);
 
   return wrappedFetch.promise// getting clear promise from wrapped
         .then(function (response) {
-          clearTimeout(timeoutId)
-          return response
+          clearTimeout(timeoutId);
+          return response;
         })
         .then(processStatus)
-        .then(parseJson)
-}
+        .then(parseJson);
+};
 
 function myGetJSON (url, successFunction, errorFunction) {
-  var getJSONparams = { url: url, cacheBusting: true }
+  var getJSONparams = {
+    url: url, cacheBusting: true
+  };
 
   getJSON(getJSONparams).then(
-    function (data) { successFunction(data) },
-    function (error) { errorFunction(error) }
-  )
-}
-
-function redundantFetch (dataUrlArray, successFunction, errorFunction) {
-  if (!(!!dataUrlArray && Array === dataUrlArray.constructor)) {
-    console.error('redundantFetch: argument is no array')
-    console.error(dataUrlArray)
-    return false
-  }
-  var currentUrl = dataUrlArray[0]
-  if (typeof (currentUrl) !== 'string') {
-    console.error('redundantFetch: url is no string')
-    return false
-  }
-
-  console.log('redundantFetch called, urls:')
-  console.log(dataUrlArray)
-
-  dataUrlArray.shift()
-
-  var localErrorFunction
-  var localSuccessFunction
-  if (dataUrlArray.length == 0) { // last iteration
-    localSuccessFunction = successFunction
-    localErrorFunction = errorFunction
-  } else {
-    localSuccessFunction = successFunction
-    localErrorFunction = function (error) {
-      redundantFetch(dataUrlArray, successFunction, errorFunction)
+    function (data) {
+      successFunction(data);
+    },
+    function (error) {
+      errorFunction(error);
     }
-  }
-
-  var getJSONparams = { url: currentUrl, cacheBusting: true }
-  getJSON(getJSONparams).then(
-    function (data) { localSuccessFunction(data); console.log('rfetch: success on '); console.log(data) },
-    function (error) { localErrorFunction(error); console.log('rfetch: fail on '); console.log(error) }
-  )
+  );
 }
 
-module.exports = redundantFetch
+function redundantFetch (dataUrlArray, successFunction, errorFunction, params) {
+  if (!(!!dataUrlArray && Array === dataUrlArray.constructor)) {
+    console.error('redundantFetch: argument is no array');
+    console.error(dataUrlArray);
+    return false;
+  }
+  var currentUrl = dataUrlArray[0];
+  if (typeof (currentUrl) !== 'string') {
+    console.error('redundantFetch: url is no string');
+    return false;
+  }
+
+  console.log('redundantFetch called, urls:');
+  console.log(dataUrlArray);
+
+  dataUrlArray.shift();
+
+  var localErrorFunction;
+  var localSuccessFunction;
+  if (dataUrlArray.length == 0) { // last iteration
+    localSuccessFunction = successFunction;
+    localErrorFunction = errorFunction;
+  } else {
+    localSuccessFunction = successFunction;
+    localErrorFunction = function (error) {
+      redundantFetch(dataUrlArray, successFunction, errorFunction, params);
+    };
+  }
+
+  var getJSONparams = {
+    url: currentUrl,
+    cacheBusting: (!((params && params.cacheBusting === false)))
+  };
+  getJSON(getJSONparams).then(
+    function (data) {
+      localSuccessFunction(data); console.log('rfetch: success on '); console.log(data);
+    },
+    function (error) {
+      localErrorFunction(error); console.log('rfetch: fail on '); console.log(error);
+    }
+  );
+}
+
+module.exports = redundantFetch;

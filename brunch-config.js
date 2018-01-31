@@ -5,7 +5,11 @@ module.exports = {
       'leaflet-draw': ['dist/leaflet.draw.css'],
     },
   },
-
+  conventions: {
+    ignored: [
+      /^app\/test/
+    ],
+  },
   files: {
     javascripts: {
       joinTo: {
@@ -22,6 +26,27 @@ module.exports = {
   },
 
   plugins: {
-    babel: {presets: ['es2015']}
+    babel: {
+      presets: ['es2015']
+    },
+    envstatic: {
+      variables: {
+        MOCK_AJAX: "false",
+        BASE_URL: 'https://' + process.env.FQDN
+      }
+    }
+  },
+
+  overrides: {
+    local:{
+      plugins: {
+        envstatic: {
+          variables: {
+            MOCK_AJAX: "true"
+          }
+        }
+      }
+    }
   }
+
 }

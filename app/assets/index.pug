@@ -8,7 +8,7 @@ html(lang='en')
     script(src='vendor.js')
     script(src='app.js')
     script require('initialize')
-    script(defer='defer' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.js')
+    script(defer='defer' src='https://code.jquery.com/jquery-1.12.4.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js')
     script(defer='defer' src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js')
     script(defer='defer' src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js')
@@ -28,6 +28,7 @@ html(lang='en')
       form
         fieldset.no-padding
           .row#menu
+            a(href='#' id='loginbutton' class='btn btn-default') Login
             a(href='https://susy-partners.github.io/transformap-viewer/editable.html?background=mapnik#5/50.458/10.261' class='btn btn-default' id='gotomap' target='_blank') → Go to Map
             a(href='https://github.com/TransforMap/transformap-editor/blob/master/HELP.md' class='btn btn-default' id='help' target='_blank') Help
             a(href='.' id='newbutton' title='Create a new POI' class='btn btn-success') New
@@ -119,16 +120,11 @@ html(lang='en')
           
           //fixme allow more than one field for each type
         fieldset
-          legend Additional Information
-          .row
-            label(for='_key_image') Link to image
-            input(type='text' id='_key_image' class='form-control')
-            span &nbsp;Upload&nbsp;
-            a(href='https://base.transformap.co/wiki/Special:Upload' target='_blank') here
-            span .
-          .row
-            label(for='_key_video') Link to video
-            input(type='text' id='_key_video' class='form-control')
+          legend(class='relatedMediaTitle') Related media files
+          .row.header(style='text-align:right')
+            p Add new media file
+            button(type='button' id='newmedia' class='btn btn-success' data-toggle='modal' data-target='#mediaFileDialog') Add
+          .row#media
         fieldset#freetags
           legend Free Tags
           //fixme must add additional fields when user fills one
@@ -149,5 +145,23 @@ html(lang='en')
       button(type='button' id='delete' class='btn btn-danger btn-sm') Delete POI
       button(type='button' id='save' class='btn btn-success btn-lg') Save
 
-            
     #map
+    .modal.fade#mediaFileDialog(role='dialog')
+      #mediaFileDialogContent
+        input(style="display:none" type='text' class='form-control mediaId')
+        input(style="display:none" type='text' class='form-control metadata')
+        input(style="display:none" type='text' class='form-control poi')
+        input(style="display:none" type='text' class='form-control createOrUpdate')
+        .row.mediaFile
+          img(class='mediaThumb')
+          input(type='file' id='mediaUpload')
+          .row.mediaInfo
+            input(type='text' class='name form-control mediaFormItem' placeholder='Name')
+            input(type='text' class='description form-control mediaFormItem' placeholder='Description')
+        .row
+          legend Version history
+          p.hint You can roll back to a different version by clinking on 'Activate'
+          .row.mediaVersions
+        hr
+        button(type='button' id='mediacancel' class='btn') Cancel
+        button(type='button' id='mediasave' class='btn btn-success') Save
