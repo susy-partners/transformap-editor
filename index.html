@@ -8,7 +8,7 @@
     <script src="vendor.js"></script>
     <script src="app.js"></script>
     <script>require('initialize')</script>
-    <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+    <script defer="defer" src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
     <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
@@ -29,7 +29,7 @@
       <h1>SUSY-Editor</h1>
       <form>
         <fieldset class="no-padding">
-          <div class="row" id="menu"><a class="btn btn-default" href="https://susy-partners.github.io/transformap-viewer/editable.html?background=mapnik#5/50.458/10.261" id="gotomap" target="_blank">→ Go to Map</a><a class="btn btn-default" href="https://github.com/TransforMap/transformap-editor/blob/master/HELP.md" id="help" target="_blank">Help</a><a class="btn btn-success" href="." id="newbutton" title="Create a new POI">New</a><a class="btn btn-danger" href="" id="resetbutton">Reset</a></div>
+          <div class="row" id="menu"><a class="btn btn-default" href="#" id="loginbutton">Login</a><a class="btn btn-default" href="https://susy-partners.github.io/transformap-viewer/editable.html?background=mapnik#5/50.458/10.261" id="gotomap" target="_blank">→ Go to Map</a><a class="btn btn-default" href="https://github.com/TransforMap/transformap-editor/blob/master/HELP.md" id="help" target="_blank">Help</a><a class="btn btn-success" href="." id="newbutton" title="Create a new POI">New</a><a class="btn btn-danger" href="" id="resetbutton">Reset</a></div>
         </fieldset>
         <fieldset id="address">
           <legend>Name and address</legend>
@@ -58,12 +58,12 @@
             <input class="form-control" type="text" id="_key_addr:housenumber">
           </div>
           <!--fixme add support for addr:housename and addr:place-->
-          <div class="row" style="margin-top:1em">
+          <div class="row" style="margin-top:1em;">
             <label>Search for Coordinates from Address</label>
             <button class="btn btn-success" type="button" id="coordsearch">Go!</button>
             <Search>using OpenStreetMap</Search>
           </div>
-          <div class="row" style="margin-top:1em">
+          <div class="row" style="margin-top:1em;">
             <label for="_geometry_lon" title="X, WGS84, decimal degree">Longitude</label>
             <input class="form-control" type="text" id="_geometry_lon">
           </div>
@@ -138,15 +138,12 @@
           <!--fixme allow more than one field for each type-->
         </fieldset>
         <fieldset>
-          <legend>Additional Information</legend>
-          <div class="row">
-            <label for="_key_image">Link to image</label>
-            <input class="form-control" type="text" id="_key_image"><span>&nbsp;Upload&nbsp;</span><a href="https://base.transformap.co/wiki/Special:Upload" target="_blank">here</a><span>.</span>
+          <legend class="relatedMediaTitle">Related media files</legend>
+          <div class="row header" style="text-align:right;">
+            <p>Add new media file</p>
+            <button class="btn btn-success" type="button" id="newmedia" data-toggle="modal" data-target="#mediaFileDialog">Add</button>
           </div>
-          <div class="row">
-            <label for="_key_video">Link to video</label>
-            <input class="form-control" type="text" id="_key_video">
-          </div>
+          <div class="row" id="media"></div>
         </fieldset>
         <fieldset id="freetags">
           <legend>Free Tags</legend>
@@ -174,5 +171,28 @@
       <button class="btn btn-success btn-lg" type="button" id="save">Save</button>
     </div>
     <div id="map"></div>
+    <div class="modal fade" id="mediaFileDialog" role="dialog">
+      <div id="mediaFileDialogContent">
+        <input class="form-control mediaId" style="display:none;" type="text">
+        <input class="form-control metadata" style="display:none;" type="text">
+        <input class="form-control poi" style="display:none;" type="text">
+        <input class="form-control createOrUpdate" style="display:none;" type="text">
+        <div class="row mediaFile"><img class="mediaThumb">
+          <input type="file" id="mediaUpload">
+          <div class="row mediaInfo">
+            <input class="name form-control mediaFormItem" type="text" placeholder="Name">
+            <input class="description form-control mediaFormItem" type="text" placeholder="Description">
+          </div>
+        </div>
+        <div class="row">
+          <legend>Version history</legend>
+          <p class="hint">You can roll back to a different version by clinking on 'Activate'</p>
+          <div class="row mediaVersions"></div>
+        </div>
+        <hr>
+        <button class="btn" type="button" id="mediacancel">Cancel</button>
+        <button class="btn btn-success" type="button" id="mediasave">Save</button>
+      </div>
+    </div>
   </body>
 </html>
